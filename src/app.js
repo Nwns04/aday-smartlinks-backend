@@ -59,7 +59,7 @@ app.use(express.json());
 app.use(subdomainDetector);
 app.use(errorHandler);
 app.use(limiter);
-app.use(checkTrial);
+// app.use(checkTrial);
 // app.use(logActivity);
 // app.use(ensureAuthenticated);
 // app.use(ensureCampaignOwner);

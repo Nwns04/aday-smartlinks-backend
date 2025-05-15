@@ -279,7 +279,7 @@ router.post("/email-goal/:email", async (req, res) => {
 // PATCH /user/subdomain
 const RESERVED_SUBDOMAINS = ['www', 'admin', 'api', 'aday', 'link', 'campaigns'];
 
-router.patch("/user/subdomain",ensureAuthenticated, ensurePremium, ensureSubscription, async (req, res) => {
+router.patch("/user/subdomain",ensureAuthenticated, async (req, res) => {
   const { email, subdomain } = req.body;
   if (!subdomain) return res.status(400).json({ message: "Subdomain required" });
 
@@ -303,7 +303,7 @@ router.patch("/user/subdomain",ensureAuthenticated, ensurePremium, ensureSubscri
   res.json({ message: "Subdomain saved", subdomain: user.subdomain });
 });
 
-router.get("/check-subdomain/:sub",ensureAuthenticated, ensurePremium,  ensureSubscription, async (req, res) => {
+router.get("/check-subdomain/:sub",ensureAuthenticated, async (req, res) => {
   const sub = req.params.sub.toLowerCase().trim();
   const RESERVED_SUBDOMAINS = ['www', 'admin', 'api', 'aday', 'link', 'campaigns'];
   if (RESERVED_SUBDOMAINS.includes(sub)) {
@@ -316,7 +316,7 @@ router.get("/check-subdomain/:sub",ensureAuthenticated, ensurePremium,  ensureSu
   res.json({ available: true });
 });
 
-router.put('/update-subdomain',ensureAuthenticated, ensurePremium, ensureSubscription, async (req, res) => {
+router.put('/update-subdomain',ensureAuthenticated, async (req, res) => {
   const { userId, subdomain } = req.body;
 
   if (!subdomain || !userId) return res.status(400).json({ message: 'Missing subdomain or userId' });
@@ -336,7 +336,7 @@ router.put('/update-subdomain',ensureAuthenticated, ensurePremium, ensureSubscri
   res.json({ message: 'Subdomain updated', user });
 });
 
-router.post("/domain",ensureAuthenticated, ensurePremium, ensureSubscription, async (req, res) => {
+router.post("/domain",ensureAuthenticated, async (req, res) => {
   const { email, domain } = req.body;
 
   if (!email || !domain) return res.status(400).json({ message: "Email and domain required" });

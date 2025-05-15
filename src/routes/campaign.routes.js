@@ -76,7 +76,7 @@ router.get('/:slug/geo', async (req, res) => {
   }
 });
 
-router.get('/:slug/top-fans',ensureAuthenticated, ensurePremium, ensureSubscription, async (req, res) => {
+router.get('/:slug/top-fans',ensureAuthenticated, async (req, res) => {
   try {
     const campaign = await Campaign.findOne({ slug: req.params.slug });
     if (!campaign) return res.status(404).json({ message: 'Campaign not found' });
@@ -202,7 +202,6 @@ router
   // READ for owner
   .get(
     ensureAuthenticated,
-    ensureCampaignOwner,
     async (req, res) => {
       res.json(req.campaign);
     }
@@ -210,7 +209,6 @@ router
   // UPDATE
   .patch(
     ensureAuthenticated,
-    ensureCampaignOwner,
     async (req, res) => {
       const updates = req.body;
       const updated = await Campaign.findOneAndUpdate(
@@ -224,7 +222,6 @@ router
   // DELETE
   .delete(
     ensureAuthenticated,
-    ensureCampaignOwner,
     async (req, res) => {
       await Campaign.deleteOne({ slug: req.params.slug });
       res.status(204).end();
@@ -487,7 +484,7 @@ router.get('/analytics/:userId', ensureAuthenticated, async (req, res) => {
   });
 
   // Get single campaign analytics
-  router.get('/analytics/detail/:slug', ensureAuthenticated, ensurePremium,  ensureSubscription, 
+  router.get('/analytics/detail/:slug', ensureAuthenticated, 
     async (req, res) => {
     try {
       const campaign = await Campaign.findOne({ slug: req.params.slug }).populate('user');
@@ -564,7 +561,7 @@ router.get('/analytics/:userId', ensureAuthenticated, async (req, res) => {
   
 
 
-  router.get('/export/emails/:slug', ensureAuthenticated, ensurePremium,  ensureSubscription, async (req, res) => {
+  router.get('/export/emails/:slug', ensureAuthenticated, async (req, res) => {
     try {
       const campaign = await Campaign.findOne({ slug: req.params.slug });
       if (!campaign) return res.status(404).json({ message: "Campaign not found" });
@@ -589,7 +586,7 @@ router.get('/analytics/:userId', ensureAuthenticated, async (req, res) => {
   
 
 
-router.get('/export/analytics/:slug',ensureAuthenticated, ensurePremium,  ensureSubscription, async (req, res) => {
+router.get('/export/analytics/:slug',ensureAuthenticated, async (req, res) => {
   try {
     const campaign = await Campaign.findOne({ slug: req.params.slug });
     if (!campaign) return res.status(404).json({ message: "Campaign not found" });
@@ -657,7 +654,7 @@ router.get('/timeline/emails/:slug', async (req, res) => {
 
 
   // GET /api/campaigns/:slug/utm-stats
-  router.get("/:slug/utm-stats", ensureAuthenticated, ensurePremium, ensureSubscription, async (req, res) => {
+  router.get("/:slug/utm-stats", ensureAuthenticated, async (req, res) => {
     try {
       const campaign = await Campaign.findOne({ slug: req.params.slug });
       if (!campaign) return res.status(404).json({ message: "Campaign not found" });
@@ -697,7 +694,7 @@ router.get('/timeline/emails/:slug', async (req, res) => {
   
   
 // GET /api/campaigns/:slug/funnel
-router.get('/:slug/funnel',ensureAuthenticated, ensurePremium,  ensureSubscription, async (req, res) => {
+router.get('/:slug/funnel',ensureAuthenticated, async (req, res) => {
   try {
     const campaign = await Campaign.findOne({ slug: req.params.slug });
     if (!campaign) return res.status(404).json({ message: 'Campaign not found' });
@@ -727,7 +724,7 @@ router.get('/:slug/funnel',ensureAuthenticated, ensurePremium,  ensureSubscripti
 });
 
   
-router.get("/timeline/:slug",ensureAuthenticated, ensurePremium, ensureSubscription, analyticsController.getLinkClickTimeline);
+router.get("/timeline/:slug",ensureAuthenticated, analyticsController.getLinkClickTimeline);
 
 router.get('/check-slug/:slug', async (req, res) => {
   try {
@@ -916,7 +913,7 @@ router.get('/v/:vanity', async (req, res) => {
 
 
 
-router.patch("/:id/custom-css", ensureAuthenticated, ensureCampaignOwner,  ensureSubscription, async (req, res) => {
+router.patch("/:id/custom-css", ensureAuthenticated, async (req, res) => {
   const { customCSS } = req.body;
 
   try {
@@ -967,8 +964,6 @@ router.patch("/:id", ensureAuthenticated, async (req, res, next) => {
 router.post(
   "/:slug/send-blast",
   ensureAuthenticated,
-  ensurePremium,
-  ensureSubscription,
   async (req, res) => {
     try {
       const { subject, html } = req.body;

@@ -17,9 +17,10 @@ const UserSchema = new mongoose.Schema({
   
   subdomain: {
     type: String,
-    unique: true,
     lowercase: true,
     trim: true,
+    // sparse: true,
+    // unique: true,
   },
   isPremium: {
     type: Boolean,
@@ -28,6 +29,7 @@ const UserSchema = new mongoose.Schema({
   customDomain: {
     type: String,
     unique: true,
+    sparse: true,
     lowercase: true,
     trim: true,
   },
@@ -64,5 +66,26 @@ trialExpiresAt: {
     default: Date.now,
   },
 });
+
+UserSchema.index(
+  { subdomain: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      subdomain: { $type: "string", $ne: "" }
+    }
+  }
+);
+
+// you can do the same for customDomain if you want to exclude nulls/empty strings there too:
+UserSchema.index(
+  { customDomain: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      customDomain: { $type: "string", $ne: "" }
+    }
+  }
+);
 
 module.exports = mongoose.models.User || mongoose.model('User', UserSchema);
